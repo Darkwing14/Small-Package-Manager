@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# Installer for SPM
+SPM_BIN="/usr/local/bin/spm"
+DB_FILE="/usr/local/bin/.spmpaklist"
+
+# URLs (replace with your GitHub raw URLs)
+SPM_URL="https://raw.githubusercontent.com/Darkwing14/SPM/main/spm"
+DB_URL="https://raw.githubusercontent.com/Darkwing14/SPM/main/.spmpaklist"
+
+# Check for root
+if [[ $EUID -ne 0 ]]; then
+    echo "Please run this installer as root."
+    exit 1
+fi
+
+# Install SPM
+echo "Installing SPM..."
+curl -s "$SPM_URL" -o "$SPM_BIN"
+chmod +x "$SPM_BIN"
+echo "SPM installed to $SPM_BIN"
+
+# Install package DB
+echo "Installing SPM package database..."
+curl -s "$DB_URL" -o "$DB_FILE"
+chmod 644 "$DB_FILE"
+echo "Package database installed to $DB_FILE"
+
+echo "Installation complete! You can now run 'spm add <package>'"
