@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+distro_id=$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
+
+case "$distro_id" in
+    ubuntu)
+        echo "[Ubuntu] 0"
+        ;;
+    debian)
+        echo "[Debian] @"
+        ;;
+    arch)
+        echo "[Arch Linux] A"
+        ;;
+    fedora)
+        echo "[Fedora] f"
+        ;;
+    linuxmint)
+        echo "[Linux Mint] lm"
+        ;;
+    *)
+        echo "[$distro_id]"
+        ;;
+esac
+
+uname -a && free -h
