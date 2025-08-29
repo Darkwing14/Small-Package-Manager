@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Path to your DB
+DB="/usr/local/bin/.spmpaklist"
+
+# Command-line arguments
+ACTION="$1"
+PACKAGE="$2"
+
+# Basic check
+if [[ -z "$ACTION" || -z "$PACKAGE" ]]; then
+    echo "Usage: $0 <action> <package>"
+    exit 1
+fi
+
+# Simple key/value JSON parser using grep/sed
+get_command() {
+    local pkg="$1"
+    grep "\"$pkg\"" "$DB" | sed -E 's/.*: "(.*)".*/\1/'
+}
+
+case "$ACTION" in
+    add)
+        CMD=$(get_command "$PACKAGE")
+        if [[ -z "$CMD" ]]; then
+            echo "Package '$PACKAGE' not found in DB."
+            exit 1
+        fi
+        echo "Installing $PACKAGE..."
+        eval "$CMD"
+        ;;
+    *)
+        echo "Unknown action: $ACTION"
+        exit 1
+        ;;
+esac
