@@ -1,0 +1,3 @@
+{
+  "systemfetch": "curl -s https://raw.githubusercontent.com/Darkwing14/SPM/main/systemfetch -o /usr/local/bin/systemfetch && chmod +x /usr/local/bin/systemfetch"
+}
