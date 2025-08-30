@@ -4,37 +4,67 @@ import curses, sys, os
 filename = sys.argv[1] if len(sys.argv) > 1 else input('filename? ')
 os.system(f"touch '{filename}'")
 
-try: lines = open(filename).read().splitlines()
-except FileNotFoundError: lines = [""]
+try:
+    lines = open(filename).read().splitlines()
+except FileNotFoundError:
+    lines = [""]
 
 def main(stdscr):
     curses.curs_set(1)
     stdscr.keypad(True)
     y, x = 0, 0
+    scroll = 0  # top visible line
+
     while True:
         stdscr.clear()
-        for i, line in enumerate(lines[:curses.LINES]):
-            stdscr.addstr(i, 0, line[:curses.COLS - 1])
-        if y >= len(lines): lines.append("")
+        height, width = stdscr.getmaxyx()
+
+        # adjust scroll to keep cursor visible
+        if y < scroll:
+            scroll = y
+        elif y >= scroll + height:
+            scroll = y - height + 1
+
+        # draw only visible lines
+        for i, line in enumerate(lines[scroll:scroll + height]):
+            stdscr.addstr(i, 0, line[:width - 1])
+
+        if y >= len(lines):
+            lines.append("")
         x = min(x, len(lines[y]))
-        stdscr.move(y, x)
+        stdscr.move(y - scroll, x)
         stdscr.refresh()
-        try: c = stdscr.get_wch()
-        except curses.error: continue
-        if c == '\x1b': break
-        elif c == curses.KEY_UP: y = max(0, y-1)
-        elif c == curses.KEY_DOWN: y = min(len(lines)-1, y+1)
-        elif c == curses.KEY_LEFT: x = max(0, x-1)
-        elif c == curses.KEY_RIGHT: x = min(len(lines[y]), x+1)
+
+        try:
+            c = stdscr.get_wch()
+        except curses.error:
+            continue
+
+        if c == '\x1b':
+            break
+        elif c == curses.KEY_UP:
+            y = max(0, y - 1)
+        elif c == curses.KEY_DOWN:
+            y = min(len(lines) - 1, y + 1)
+        elif c == curses.KEY_LEFT:
+            x = max(0, x - 1)
+        elif c == curses.KEY_RIGHT:
+            x = min(len(lines[y]), x + 1)
         elif c in ('\b', '\x7f', curses.KEY_BACKSPACE):
-            if x > 0: lines[y] = lines[y][:x-1] + lines[y][x:]; x -= 1
-            elif y > 0: x = len(lines[y-1]); lines[y-1] += lines[y]; lines.pop(y); y -= 1
+            if x > 0:
+                lines[y] = lines[y][:x - 1] + lines[y][x:]
+                x -= 1
+            elif y > 0:
+                x = len(lines[y - 1])
+                lines[y - 1] += lines[y]
+                lines.pop(y)
+                y -= 1
         elif c == '\n':
-            lines.insert(y+1, lines[y][x:])
+            lines.insert(y + 1, lines[y][x:])
             lines[y] = lines[y][:x]
-            y += 1; x = 0
+            y += 1
+            x = 0
         elif isinstance(c, str):
-            while y >= len(lines): lines.append("")
             lines[y] = lines[y][:x] + c + lines[y][x:]
             x += 1
 
