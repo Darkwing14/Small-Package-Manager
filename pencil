@@ -15,6 +15,7 @@ def main(stdscr):
         stdscr.clear()
         for i, line in enumerate(lines[:curses.LINES]):
             stdscr.addstr(i, 0, line[:curses.COLS - 1])
+        if y >= len(lines): lines.append("")
         x = min(x, len(lines[y]))
         stdscr.move(y, x)
         stdscr.refresh()
