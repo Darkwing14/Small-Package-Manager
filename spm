@@ -44,9 +44,12 @@ case "$1" in
     trash)
         rm -i /usr/local/bin/$2
         ;;
+    reinstall)
+        spm trash $2
+        spm add $2
     *)
         echo "Unknown command: $1"
-        echo "Usage: sudo spm <add (package)|update|version|trash (package)>"
+        echo "Usage: sudo spm <add (package)|update|version|trash (package)|reinstall (package)>"
         exit 1
         ;;
 esac
