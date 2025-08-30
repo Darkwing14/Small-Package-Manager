@@ -22,4 +22,4 @@ case "$distro_id" in
         ;;
 esac
 
-uname -a && free -h
+uname -a && free -h && whoami && hostname
