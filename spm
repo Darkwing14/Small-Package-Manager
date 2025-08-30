@@ -42,7 +42,7 @@ case "$1" in
         echo "1.1"
         ;;
     trash)
-        rm -i $2
+        rm -i /usr/local/bin/$2
         ;;
     *)
         echo "Unknown command: $1"
