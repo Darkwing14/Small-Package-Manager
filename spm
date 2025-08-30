@@ -35,10 +35,17 @@ case "$1" in
         chmod +x "$INSTALL_DIR/$PACKAGE"
         echo "Installed $PACKAGE to $INSTALL_DIR"
         ;;
-
+    update)
+        spm add spm
+        ;;
+    version)
+        echo "1.1"
+        ;;
+    trash)
+        rm -i $2
     *)
         echo "Unknown command: $1"
-        echo "Usage: sudo spm add <package>"
+        echo "Usage: sudo spm <add (package)|update|version|trash (package)>"
         exit 1
         ;;
 esac
