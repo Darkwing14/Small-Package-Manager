@@ -43,6 +43,7 @@ case "$1" in
         ;;
     trash)
         rm -i $2
+        ;;
     *)
         echo "Unknown command: $1"
         echo "Usage: sudo spm <add (package)|update|version|trash (package)>"
