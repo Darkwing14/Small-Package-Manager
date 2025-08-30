@@ -1,36 +1,44 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Path to your DB
-DB="/usr/local/bin/.spmpaklist"
+# Simple Package Manager (SPM)
+# Usage: sudo spm add <package>
 
-# Command-line arguments
-ACTION="$1"
-PACKAGE="$2"
+REPO_BASE="https://raw.githubusercontent.com/Darkwing14/SPM/main"
+INSTALL_DIR="/usr/local/bin"
 
-# Basic check
-if [[ -z "$ACTION" || -z "$PACKAGE" ]]; then
-    echo "Usage: $0 <action> <package>"
+# Ensure curl is available
+command -v curl >/dev/null 2>&1 || {
+    echo "Error: curl is required but not installed."
+    exit 1
+}
+
+# Ensure running as root
+if [[ $EUID -ne 0 ]]; then
+    echo "Please run as root (e.g., sudo spm add <package>)"
     exit 1
 fi
 
-# Simple key/value JSON parser using grep/sed
-get_command() {
-    local pkg="$1"
-    grep "\"$pkg\"" "$DB" | sed -E 's/.*: "(.*)".*/\1/'
-}
-
-case "$ACTION" in
+case "$1" in
     add)
-        CMD=$(get_command "$PACKAGE")
-        if [[ -z "$CMD" ]]; then
-            echo "Package '$PACKAGE' not found in DB."
+        PACKAGE="$2"
+        if [[ -z "$PACKAGE" ]]; then
+            echo "Usage: sudo spm add <package>"
             exit 1
         fi
-        echo "Installing $PACKAGE..."
-        eval "$CMD"
+
+        echo "Installing package: $PACKAGE"
+        curl -fsSL "$REPO_BASE/$PACKAGE" -o "$INSTALL_DIR/$PACKAGE" || {
+            echo "Failed to download package: $PACKAGE"
+            exit 1
+        }
+
+        chmod +x "$INSTALL_DIR/$PACKAGE"
+        echo "Installed $PACKAGE to $INSTALL_DIR"
         ;;
+
     *)
-        echo "Unknown action: $ACTION"
+        echo "Unknown command: $1"
+        echo "Usage: sudo spm add <package>"
         exit 1
         ;;
 esac
