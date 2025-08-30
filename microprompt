@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-if [[ $EUID -eq 0 ]]; then
-    PS1="\w# " # use # as a kind of "warning growl" to the user that they're root
-elif [[ $EUID -ne 0 ]]; then
-    PS1="\w$ "
-else
-    PS1="\w$ " # fallback
-fi
