@@ -42,11 +42,16 @@ case "$1" in
         echo "1.1"
         ;;
     trash)
-        rm -i /usr/local/bin/$2
+        if [[ -f "$INSTALL_DIR/$2" ]]; then
+            rm -i "$INSTALL_DIR/$2"
+        else
+            echo "Package '$2' not found in $INSTALL_DIR"
+        fi
         ;;
     reinstall)
         spm trash $2
         spm add $2
+        ;;
     *)
         echo "Unknown command: $1"
         echo "Usage: sudo spm <add (package)|update|version|trash (package)|reinstall (package)>"
