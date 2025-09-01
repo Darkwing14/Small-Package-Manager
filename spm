@@ -26,12 +26,13 @@ case "$1" in
             exit 1
         fi
 
-        echo "Installing package: $PACKAGE"
+        echo "Downloading package: $PACKAGE"
         curl -fsSL "$REPO_BASE/$PACKAGE" -o "$INSTALL_DIR/$PACKAGE" || {
             echo "Failed to download package: $PACKAGE"
             exit 1
         }
 
+        echo "Installing package: $PACKAGE"
         chmod +x "$INSTALL_DIR/$PACKAGE"
         echo "Installed $PACKAGE to $INSTALL_DIR"
         ;;
@@ -51,6 +52,22 @@ case "$1" in
     reinstall)
         spm trash $2
         spm add $2
+        ;;
+    deb)
+        PACKAGE="$2"
+        if [[ -z "$PACKAGE" ]]; then
+            echo "Usage: sudo spm deb <package>"
+            exit 1
+        fi
+
+        echo "Downloading package: $PACKAGE"
+        curl -fsSL "$REPO_BASE/$PACKAGE.deb" -o "/tmp/$PACKAGE.deb" || {
+            echo "Failed to download package: $PACKAGE"
+            exit 1
+        }
+        echo "Installing package: $PACKAGE"
+        dpkg -i "/tmp/$PACKAGE.deb"
+        echo "Installed $PACKAGE using dpkg"
         ;;
     *)
         echo "Unknown command: $1"
