@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-echo "This is a stub, to install python, use sudo spm deb python3, not sudo spm add python3."
-echo "We do not own python, we are just redistributing it so you can download it from SPM."
-echo "Note: Installing python using the deb command is harder for SPM to reverse, make sure"
-echo "you're ready to commit before you download it."
