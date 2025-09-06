@@ -3,7 +3,7 @@
 # Simple Package Manager (SPM)
 # Usage: sudo spm add <package>
 
-REPO_BASE="https://raw.githubusercontent.com/Darkwing14/SPM/main"
+REPO_BASE="https://raw.githubusercontent.com/Darkwing14/Small-Package-Manager/main"
 INSTALL_DIR="/usr/local/bin"
 
 # Ensure curl is available
